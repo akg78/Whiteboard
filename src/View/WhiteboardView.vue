@@ -44,6 +44,7 @@ export default {
     logout() {
       this.token = '';
       localStorage.removeItem("token");
+      localStorage.removeItem("name");
       window.location.href = '/login';
     },
   },
@@ -55,6 +56,7 @@ export default {
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;
   height: 95vh;
+  /* background-color: rgb(152, 150, 150); */
 }
 
 .toolbar-container {

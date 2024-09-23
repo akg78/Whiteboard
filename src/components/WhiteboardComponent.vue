@@ -184,8 +184,8 @@ export default {
 <style scoped>
 
 #whiteboard{
-  border: 1px solid red;
   background-color: beige;
+  border-radius: 10px;
 }
 
 

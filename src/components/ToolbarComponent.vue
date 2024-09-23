@@ -1,9 +1,9 @@
 <template>
   <div class="toolbar">
+    <input type="color" v-model="color" @change="updateColor" />
     <button @click="setTool('pencil')">Pencil</button>
     <button @click="setTool('rectangle')">Rectangle</button>
     <button @click="setTool('circle')">Circle</button>
-    <input type="color" v-model="color" @change="updateColor" />
   </div>
 </template>
 
@@ -27,13 +27,14 @@ export default {
 
 <style scoped>
 .toolbar {
-  border: 1px solid black;
-  height: 100px;
+  /* border: 1px solid black; */
+  height: 200px;
   display: flex;
+  /* flex-direction: column; */
   gap: 10px;
   align-items: center;
   padding: 10px;
-  /* background-color: #45a049; */
+  background-color: beige;
 
 }
 button {
