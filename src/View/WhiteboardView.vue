@@ -54,16 +54,18 @@ export default {
 <style scoped>
 .whiteboard-container {
   display: grid;
-  grid-template-columns: 1fr 3fr 1fr;
-  height: 95vh;
-  /* background-color: rgb(152, 150, 150); */
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
 .toolbar-container {
+  height: 100%;
   padding: 10px;
+  background-color: rgb(43, 43, 43);
+  border-radius: 20px;
 }
 
 .canvas-container {
+  height: 100%;
   padding: 10px;
   display: flex;
   justify-content: center;
@@ -71,6 +73,7 @@ export default {
 }
 
 .chat-container {
+  height: 100%;
   padding: 10px;
   background-color: rgb(43, 43, 43);
   border-radius: 20px;

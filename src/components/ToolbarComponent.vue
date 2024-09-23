@@ -1,9 +1,29 @@
 <template>
   <div class="toolbar">
+    <label>Color Picker</label>
     <input type="color" v-model="color" @change="updateColor" />
-    <button @click="setTool('pencil')">Pencil</button>
-    <button @click="setTool('rectangle')">Rectangle</button>
-    <button @click="setTool('circle')">Circle</button>
+    <div class="button-container">
+      <div>
+        <button @click="setTool('pencil')">
+          <font-awesome-icon icon="pencil-alt" id="i" />
+        </button>
+        <p>Pencil</p>
+      </div>
+      <div>
+        <button @click="setTool('rectangle')">
+          <font-awesome-icon icon="square" id="i" />
+        </button>
+        <p>Rectangle</p>
+      </div>
+      <div>
+        <button @click="setTool('circle')">
+          <font-awesome-icon icon="circle" id="i" />
+        </button>
+        <p>Circle</p>
+      </div>
+
+    </div>
+
   </div>
 </template>
 
@@ -27,31 +47,56 @@ export default {
 
 <style scoped>
 .toolbar {
-  /* border: 1px solid black; */
-  height: 200px;
+  display: grid;
+  gap: 20px;
+  padding: 10px;
+}
+
+button {
+  width: 30px;
+  height: 30px;
   display: flex;
-  /* flex-direction: column; */
-  gap: 10px;
+  justify-content: center;
   align-items: center;
   padding: 10px;
-  background-color: beige;
+  background-color: #f9d342;
 
-}
-button {
-  padding: 10px;
-  background-color: #4caf50;
-  color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
 }
+
 button:hover {
-  background-color: #45a049;
+  background-color: #0082be;
 }
-input[type="color"] {
-  width: 40px;
-  height: 40px;
+
+.button-container {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 32px;
+}
+
+#i {
+  color: #212121;
+}
+
+input {
+  width: 100px;
+  height: 100px;
   border: none;
   cursor: pointer;
+}
+
+label {
+  color: #ffff;
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+p {
+  color: #ffff;
+  font-size: 13px;
+  letter-spacing: 1px;
 }
 </style>

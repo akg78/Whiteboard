@@ -6,18 +6,18 @@
 </template>
 
 <script>
-import * as fabric from 'fabric';
-import io from 'socket.io-client';
+import * as fabric from "fabric";
+import io from "socket.io-client";
 
 export default {
   props: {
     selectedTool: {
       type: String,
-      default: 'pencil',
+      default: "pencil",
     },
     selectedColor: {
       type: String,
-      default: '#000000',
+      default: "#000000",
     },
   },
   data() {
@@ -50,34 +50,34 @@ export default {
       this.setDrawingMode(this.selectedTool); // Set initial tool
 
       // Emit drawing events when path is created
-      this.canvas.on('path:created', (e) => {
+      this.canvas.on("path:created", (e) => {
         const pathData = e.path.toObject();
-        this.socket.emit('draw', pathData);
+        this.socket.emit("draw", pathData);
       });
 
       // Handle mouse events for drawing
-      this.canvas.on('mouse:down', (opt) => {
+      this.canvas.on("mouse:down", (opt) => {
         this.isPainting = true; // Start drawing
       });
 
-      this.canvas.on('mouse:move', (opt) => {
+      this.canvas.on("mouse:move", (opt) => {
         // Remove the custom draw function for pencil drawing mode
         if (this.isPainting && this.canvas.isDrawingMode) {
           // `fabric.js` already handles the drawing internally.
         }
       });
 
-      this.canvas.on('mouse:up', (opt) => {
+      this.canvas.on("mouse:up", (opt) => {
         this.isPainting = false; // Stop drawing
       });
     },
 
     // Initialize the WebSocket connection
     initializeSocket() {
-      this.socket = io('http://localhost:3001');
+      this.socket = io("http://localhost:3001");
 
       // Listen for drawing events from other users
-      this.socket.on('draw', (pathData) => {
+      this.socket.on("draw", (pathData) => {
         const path = new fabric.Path(pathData.path, pathData);
         this.canvas.add(path);
       });
@@ -85,11 +85,11 @@ export default {
 
     // Set the drawing mode
     setDrawingMode(tool) {
-      this.canvas.off('mouse:down');
-      this.canvas.off('mouse:move');
-      this.canvas.off('mouse:up');
+      this.canvas.off("mouse:down");
+      this.canvas.off("mouse:move");
+      this.canvas.off("mouse:up");
 
-      if (tool === 'pencil') {
+      if (tool === "pencil") {
         this.canvas.isDrawingMode = true;
         this.canvas.freeDrawingBrush = new fabric.PencilBrush(this.canvas);
         this.canvas.freeDrawingBrush.color = this.color;
@@ -97,9 +97,9 @@ export default {
       } else {
         this.canvas.isDrawingMode = false;
 
-        if (tool === 'rectangle') {
+        if (tool === "rectangle") {
           let rect, isDown, origX, origY;
-          this.canvas.on('mouse:down', (opt) => {
+          this.canvas.on("mouse:down", (opt) => {
             isDown = true;
             const pointer = this.canvas.getPointer(opt.e);
             origX = pointer.x;
@@ -107,8 +107,8 @@ export default {
             rect = new fabric.Rect({
               left: origX,
               top: origY,
-              originX: 'left',
-              originY: 'top',
+              originX: "left",
+              originY: "top",
               width: pointer.x - origX,
               height: pointer.y - origY,
               angle: 0,
@@ -118,7 +118,7 @@ export default {
             this.canvas.add(rect);
           });
 
-          this.canvas.on('mouse:move', (opt) => {
+          this.canvas.on("mouse:move", (opt) => {
             if (!isDown) return;
             const pointer = this.canvas.getPointer(opt.e);
             if (origX > pointer.x) {
@@ -132,12 +132,12 @@ export default {
             this.canvas.renderAll();
           });
 
-          this.canvas.on('mouse:up', () => {
+          this.canvas.on("mouse:up", () => {
             isDown = false;
           });
-        } else if (tool === 'circle') {
+        } else if (tool === "circle") {
           let circle, isDown, origX, origY;
-          this.canvas.on('mouse:down', (opt) => {
+          this.canvas.on("mouse:down", (opt) => {
             isDown = true;
             const pointer = this.canvas.getPointer(opt.e);
             origX = pointer.x;
@@ -147,23 +147,26 @@ export default {
               top: origY,
               radius: 1,
               fill: this.color,
-              originX: 'center',
-              originY: 'center',
+              originX: "center",
+              originY: "center",
             });
             this.canvas.add(circle);
           });
 
-          this.canvas.on('mouse:move', (opt) => {
+          this.canvas.on("mouse:move", (opt) => {
             if (!isDown) return;
             const pointer = this.canvas.getPointer(opt.e);
-            const radius = Math.sqrt(Math.pow(pointer.x - origX, 2) + Math.pow(pointer.y - origY, 2)) / 2;
+            const radius =
+              Math.sqrt(
+                Math.pow(pointer.x - origX, 2) + Math.pow(pointer.y - origY, 2)
+              ) / 2;
             if (radius > 0) {
               circle.set({ radius: radius });
               this.canvas.renderAll();
             }
           });
 
-          this.canvas.on('mouse:up', () => {
+          this.canvas.on("mouse:up", () => {
             isDown = false;
           });
         }
@@ -173,21 +176,17 @@ export default {
     // Clear the canvas
     clearCanvas() {
       this.canvas.clear();
-      this.socket.emit('clear'); // Emit a 'clear' event to other users
+      this.socket.emit("clear"); // Emit a 'clear' event to other users
     },
   },
-
-
 };
 </script>
 
 <style scoped>
-
-#whiteboard{
+#whiteboard {
   background-color: beige;
   border-radius: 10px;
 }
-
 
 .clear-button {
   display: inline-block;
