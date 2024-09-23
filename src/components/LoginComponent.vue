@@ -41,6 +41,12 @@ export default {
   },
   methods: {
     async registerUser() {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailPattern.test(this.email)) {
+        alert('Please enter a valid email address');
+        return;
+      }
       try {
         const response = await axios.post('http://localhost:3001/api/auth/register', {
           name: this.name,
@@ -48,9 +54,9 @@ export default {
           password: this.password,
         });
         // this.isLogin = true;
-        if (response.message === "User registered successfully") {
-          localStorage.setItem('name', response.data.name);
-          localStorage.setItem('token', response.token);
+        console.log('User logged in:', response);
+        if (response?.status === 201) {
+          this.$router.push({ name: 'Whiteboard' });
         }
       } catch (error) {
         console.error('Error during registration:', error.response.data);
@@ -63,8 +69,9 @@ export default {
           email: this.email,
           password: this.password,
         });
-        console.log('User logged in:', response);
+        // console.log('User logged in:', response);
         if (response?.status === 200) {
+          localStorage.setItem("name", response?.data?.name)
           localStorage.setItem("token", response?.data?.token)
           this.$router.push({ name: 'Whiteboard' });
         }

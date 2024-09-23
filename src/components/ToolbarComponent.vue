@@ -27,10 +27,14 @@ export default {
 
 <style scoped>
 .toolbar {
+  border: 1px solid black;
+  height: 100px;
   display: flex;
   gap: 10px;
   align-items: center;
   padding: 10px;
+  /* background-color: #45a049; */
+
 }
 button {
   padding: 10px;

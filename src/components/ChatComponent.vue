@@ -24,7 +24,7 @@
     },
     methods: {
       initializeSocket() {
-        this.socket = io('http://localhost:3000');
+        this.socket = io('http://localhost:3001');
         this.socket.on('chat-message', (message) => {
           this.messages.push(message);
         });
