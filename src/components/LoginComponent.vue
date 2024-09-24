@@ -48,7 +48,7 @@ export default {
         return;
       }
       try {
-        const response = await axios.post('http://localhost:3001/api/auth/register', {
+        const response = await axios.post('https://whiteboard-back-end.vercel.app/api/auth/register', {
           name: this.name,
           email: this.email,
           password: this.password,
@@ -65,7 +65,7 @@ export default {
     },
     async loginUser() {
       try {
-        const response = await axios.post('http://localhost:3001/api/auth/login', {
+        const response = await axios.post('https://whiteboard-back-end.vercel.app/api/auth/login', {
           email: this.email,
           password: this.password,
         });

@@ -16,6 +16,7 @@ export default {
     return {
       messages: [],
       newMessage: '',
+      username: 'Ankit', 
       socket: null,
     };
   },
@@ -24,8 +25,8 @@ export default {
   },
   methods: {
     initializeSocket() {
-      this.socket = io('http://localhost:3001', {
-        withCredentials: true, // This sends credentials (like cookies) if needed
+      this.socket = io("https://whiteboard-back-end.vercel.app/", {
+        withCredentials: true,
         extraHeaders: {
           "Access-Control-Allow-Origin": "*"
         }
@@ -37,8 +38,14 @@ export default {
 
     },
     sendMessage() {
-      this.socket.emit('chat-message', this.newMessage);
-      this.newMessage = '';
+      if (this.newMessage.trim() !== '') {
+        const messageObj = {
+          username: this.username,
+          message: this.newMessage 
+        };
+        this.socket.emit('chat-message', messageObj);
+        this.newMessage = '';
+      }
     },
   },
 };

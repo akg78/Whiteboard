@@ -2,6 +2,12 @@
   <div>
     <canvas id="whiteboard" ref="canvas" width="800" height="600"></canvas>
     <a class="clear-button" @click.prevent="clearCanvas">Clear Canvas</a>
+
+    <div class="toolbar">
+      <label for="stroke-width">Stroke Width:</label>
+      <input type="range" id="stroke-width" min="1" max="50" v-model="strokeWidth" @input="updateStrokeWidth" />
+
+    </div>
   </div>
 </template>
 
@@ -26,7 +32,7 @@ export default {
       socket: null,
       isPainting: false,
       color: this.selectedColor,
-      strokeWidth: 5, // Default stroke width for pencil
+      strokeWidth: 5,
     };
   },
   watch: {
@@ -47,23 +53,27 @@ export default {
     // Initialize the fabric.js canvas
     initializeCanvas() {
       this.canvas = new fabric.Canvas(this.$refs.canvas);
-      this.setDrawingMode(this.selectedTool); // Set initial tool
+      this.setDrawingMode(this.selectedTool);
 
       // Emit drawing events when path is created
       this.canvas.on("path:created", (e) => {
         const pathData = e.path.toObject();
-        this.socket.emit("draw", pathData);
+        try {
+          this.socket.emit("draw", pathData);
+        } catch (error) {
+          console.error("Error sending draw data:", error);
+        }
       });
+
 
       // Handle mouse events for drawing
       this.canvas.on("mouse:down", (opt) => {
-        this.isPainting = true; // Start drawing
+        this.isPainting = true;
       });
 
       this.canvas.on("mouse:move", (opt) => {
         // Remove the custom draw function for pencil drawing mode
         if (this.isPainting && this.canvas.isDrawingMode) {
-          // `fabric.js` already handles the drawing internally.
         }
       });
 
@@ -74,13 +84,24 @@ export default {
 
     // Initialize the WebSocket connection
     initializeSocket() {
-      this.socket = io("https://whiteboard-back-end.vercel.app");
-
+      this.socket = io("https://whiteboard-back-end.vercel.app/", {
+        withCredentials: true,
+        extraHeaders: {
+          "Access-Control-Allow-Origin": "*"
+        }
+      })
       // Listen for drawing events from other users
       this.socket.on("draw", (pathData) => {
-        const path = new fabric.Path(pathData.path, pathData);
-        this.canvas.add(path);
+        if (pathData && pathData.path) {
+          try {
+            const path = new fabric.Path(pathData.path, pathData);
+            this.canvas.add(path);
+          } catch (error) {
+            console.error("Error adding path to canvas:", error);
+          }
+        }
       });
+
     },
 
     // Set the drawing mode
@@ -93,6 +114,11 @@ export default {
         this.canvas.isDrawingMode = true;
         this.canvas.freeDrawingBrush = new fabric.PencilBrush(this.canvas);
         this.canvas.freeDrawingBrush.color = this.color;
+        this.canvas.freeDrawingBrush.width = this.strokeWidth;
+      } else if (tool === "eraser") {
+        this.canvas.isDrawingMode = true;
+        this.canvas.freeDrawingBrush = new fabric.PencilBrush(this.canvas);
+        this.canvas.freeDrawingBrush.color = "#ffffff";
         this.canvas.freeDrawingBrush.width = this.strokeWidth;
       } else {
         this.canvas.isDrawingMode = false;
@@ -173,10 +199,26 @@ export default {
       }
     },
 
+    // Function to set the drawing color
+    setColor(newColor) {
+      this.color = newColor;
+
+      if (this.canvas.isDrawingMode) {
+        this.canvas.freeDrawingBrush.color = this.color;
+      }
+    },
+
+    // Update the stroke width dynamically
+    updateStrokeWidth() {
+      if (this.canvas.isDrawingMode) {
+        this.canvas.freeDrawingBrush.width = this.strokeWidth;
+      }
+    },
+
     // Clear the canvas
     clearCanvas() {
       this.canvas.clear();
-      this.socket.emit("clear"); // Emit a 'clear' event to other users
+      this.socket.emit("clear");
     },
   },
 };
@@ -184,7 +226,8 @@ export default {
 
 <style scoped>
 #whiteboard {
-  background-color: beige;
+  border: 2px solid rgb(17, 17, 17);
+  background-color: white;
   border-radius: 10px;
 }
 
@@ -200,5 +243,13 @@ export default {
 
 .clear-button:hover {
   background-color: darkred;
+}
+
+.toolbar {
+  margin-top: 10px;
+}
+
+input[type="range"] {
+  margin-right: 10px;
 }
 </style>

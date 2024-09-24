@@ -10,6 +10,12 @@
         <p>Pencil</p>
       </div>
       <div>
+        <button @click="setTool('eraser')">
+          <font-awesome-icon icon="eraser" id="i" />
+        </button>
+        <p>Eraser</p>
+      </div>
+      <div>
         <button @click="setTool('rectangle')">
           <font-awesome-icon icon="square" id="i" />
         </button>
@@ -21,9 +27,7 @@
         </button>
         <p>Circle</p>
       </div>
-
     </div>
-
   </div>
 </template>
 
@@ -31,15 +35,21 @@
 export default {
   data() {
     return {
-      color: '#000000',
+      color: "#000000",
+      strokeWidth: 2,
     };
   },
   methods: {
     setTool(tool) {
-      this.$emit('setTool', tool);
+      this.$emit("setTool", tool);
     },
     updateColor() {
-      this.$emit('setColor', this.color);
+      this.$emit("setColor", this.color);
+    },
+    updateStrokeWidth() {
+      if (this.canvas.isDrawingMode) {
+        this.canvas.freeDrawingBrush.width = this.strokeWidth;
+      }
     },
   },
 };
@@ -60,7 +70,6 @@ button {
   align-items: center;
   padding: 10px;
   background-color: #f9d342;
-
   border: none;
   border-radius: 6px;
   cursor: pointer;

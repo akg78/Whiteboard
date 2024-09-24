@@ -1,18 +1,15 @@
 <template>
   <div class="whiteboard-container">
     <div class="toolbar-container">
-      <!-- Toolbar for selecting tools and colors -->
       <ToolbarComponent @setTool="setDrawingTool" @setColor="setDrawingColor" />
     </div>
 
     <div class="canvas-container">
-      <!-- Canvas for drawing -->
       <WhiteboardComponent ref="whiteboard" />
     </div>
 
     <div class="chat-container">
       <button @click="logout" class="logout-btn">Logout</button>
-      <!-- Placeholder for chat component -->
       <ChatComponent />
     </div>
   </div>
@@ -21,7 +18,7 @@
 <script>
 import ToolbarComponent from '../components/ToolbarComponent.vue';
 import WhiteboardComponent from '../components/WhiteboardComponent.vue';
-import ChatComponent from '../components/ChatComponent.vue'; // Assuming you have a chat component
+import ChatComponent from '../components/ChatComponent.vue'; 
 
 export default {
   components: {
