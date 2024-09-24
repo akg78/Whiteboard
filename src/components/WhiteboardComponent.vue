@@ -74,7 +74,7 @@ export default {
 
     // Initialize the WebSocket connection
     initializeSocket() {
-      this.socket = io("http://localhost:3001");
+      this.socket = io("https://whiteboard-back-end.vercel.app");
 
       // Listen for drawing events from other users
       this.socket.on("draw", (pathData) => {
